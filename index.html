@@ -32,8 +32,17 @@
         var(--bg-main);
       color: var(--text-main);
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
       padding: 32px 16px;
+    }
+
+    h1#mainTitle {
+      text-align:center;
+      color:#fff;
+      font-size:32px;
+      margin-bottom:20px;
+      font-weight:bold;
     }
 
     .app-shell {
@@ -60,10 +69,7 @@
       mix-blend-mode: screen;
     }
 
-    .app-inner {
-      position: relative;
-      z-index: 1;
-    }
+    .app-inner { position: relative; z-index: 1; }
 
     header {
       display: flex;
@@ -73,20 +79,9 @@
       gap: 12px;
     }
 
-    .title-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    .title-wrap { display: flex; flex-direction: column; gap: 4px; }
 
-    h1 {
-      margin: 0;
-      font-size: 20px;
-      letter-spacing: 0.03em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    h1 { margin: 0; font-size: 20px; letter-spacing: 0.03em; display: flex; align-items: center; gap: 8px; }
 
     .badge {
       padding: 2px 8px;
@@ -99,10 +94,7 @@
       color: #c7d2fe;
     }
 
-    .subtitle {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
+    .subtitle { font-size: 12px; color: var(--text-muted); }
 
     .pill-stat {
       padding: 6px 10px;
@@ -161,133 +153,38 @@
       gap: 8px;
       flex-wrap: wrap;
     }
-
-    .btn-primary {
+    .btn-primary, .btn-secondary, .btn-danger {
       padding: 7px 18px;
       border-radius: var(--radius-pill);
-      border: none;
-      background-image: var(--accent-grad);
-      color: #f9fafb;
       font-size: 13px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      letter-spacing: 0.02em;
-      box-shadow:
-        0 0 0 1px rgba(129,140,248,0.6),
-        0 14px 30px rgba(37,99,235,0.45);
-      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.12s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-primary::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent 20%, rgba(248,250,252,0.28) 50%, transparent 80%);
-      opacity: 0;
-      transform: translateX(-40%);
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      pointer-events: none;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      transform: translateY(-1px);
-      filter: brightness(1.08);
-      box-shadow:
-        0 0 0 1px rgba(191,219,254,0.65),
-        0 18px 40px rgba(37,99,235,0.55);
-    }
-
-    .btn-primary:hover:not(:disabled)::after {
-      opacity: 1;
-      transform: translateX(40%);
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.55;
-      cursor: default;
-      box-shadow: 0 0 0 1px rgba(148,163,255,0.4);
+      transition: 0.15s ease;
     }
 
     .btn-secondary {
-      padding: 7px 14px;
-      border-radius: var(--radius-pill);
       border: 1px solid rgba(148,163,255,0.7);
       background: rgba(15,23,42,0.95);
       color: #e5e7eb;
-      font-size: 13px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(129,140,248,0.25);
-      border-color: rgba(191,219,254,0.9);
-      transform: translateY(-1px);
     }
 
     .btn-danger {
-      padding: 7px 14px;
-      border-radius: var(--radius-pill);
       border: 1px solid rgba(248,113,113,0.8);
       background: rgba(30,7,15,0.95);
       color: #fecaca;
-      font-size: 13px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
     }
 
-    .btn-danger:hover {
-      background: rgba(248,113,113,0.2);
-      border-color: rgba(252,165,165,1);
-      transform: translateY(-1px);
-    }
-
-    .hint {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .status {
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .status strong {
-      color: #e5e7eb;
-    }
-
-    .progress-bar {
-      margin-top: 6px;
-      height: 5px;
-      background: radial-gradient(circle at 0 0, rgba(51,65,85,0.9), transparent 85%);
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid rgba(30,64,175,0.6);
-    }
-
-    .progress-inner {
-      height: 100%;
-      width: 0%;
+    .btn-primary {
       background-image: var(--accent-grad);
-      box-shadow: 0 0 12px rgba(56,189,248,0.8);
-      transition: width 0.18s ease-out;
+      border: none;
+      color: #fff;
     }
+
+    .status { margin-top: 10px; font-size: 12px; color: var(--text-muted); display:flex; justify-content:space-between; }
+    .progress-bar { margin-top:6px; height:5px; background:#334155; border-radius:999px; overflow:hidden; }
+    .progress-inner { height:100%; width:0%; background-image:var(--accent-grad); transition:0.2s ease; }
 
     .current-box {
       margin-top: 14px;
@@ -295,251 +192,122 @@
       border-radius: 16px;
       background: radial-gradient(circle at 0 0, rgba(56,189,248,0.18), transparent 70%) rgba(15,23,42,0.95);
       border: 1px solid rgba(59,130,246,0.7);
-      box-shadow: 0 10px 26px rgba(15,23,42,0.9);
     }
 
-    .current-label {
-      font-size: 11px;
-      color: #93c5fd;
-      margin-bottom: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .current-label span:last-child {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .current-text {
-      font-size: 15px;
-      line-height: 1.6;
-      color: #e5e7eb;
-      max-height: 120px;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
+    .current-label { font-size: 11px; color:#93c5fd; margin-bottom:4px; display:flex; justify-content:space-between; }
+    .current-text { font-size:15px; line-height:1.6; color:#e5e7eb; max-height:120px; overflow:auto; }
 
     .output-wrapper {
       margin-top: 16px;
-      background: radial-gradient(circle at 0 0, rgba(15,23,42,0.9), transparent 70%) var(--bg-card-soft);
-      border-radius: 18px;
-      padding: 10px 10px;
-      max-height: 390px;
-      overflow: auto;
-      border: 1px solid rgba(30,64,175,0.75);
-      box-shadow: 0 18px 40px rgba(15,23,42,0.8);
-    }
-
-    .output-wrapper::-webkit-scrollbar {
-      width: 6px;
-    }
-    .output-wrapper::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, rgba(56,189,248,0.8), rgba(129,140,248,0.8));
-      border-radius: 999px;
+      background: rgba(15,23,42,0.95);
+      border-radius:18px;
+      padding:10px;
+      max-height:390px;
+      overflow:auto;
+      border:1px solid rgba(30,64,175,0.75);
     }
 
     .line-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 7px 8px;
-      border-bottom: 1px dashed rgba(30,41,59,0.85);
-      transition: background 0.12s ease, transform 0.08s ease, border-color 0.12s ease, box-shadow 0.12s ease;
-      border-radius: 12px;
-      margin-bottom: 2px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:7px 8px;
+      border-bottom:1px dashed #1e293b;
+      border-radius:12px;
+      margin-bottom:2px;
+      transition:0.12s ease;
     }
-
-    .line-row:last-child {
-      border-bottom: none;
-    }
-
-    .line-row:hover {
-      background: radial-gradient(circle at 0 0, rgba(37,99,235,0.18), transparent 70%);
-      border-color: rgba(96,165,250,0.8);
-      transform: translateY(-1px);
-      box-shadow: 0 10px 22px rgba(15,23,42,0.85);
-    }
-
     .line-row.row-active {
-      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.24), transparent 70%);
-      border-color: rgba(56,189,248,0.9);
-      box-shadow:
-        0 0 0 1px rgba(34,211,238,0.7),
-        0 12px 30px rgba(15,23,42,0.95);
+      background:#0c4a6e;
+      border-color:#38bdf8;
     }
-
     .line-num {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: 1px solid rgba(148,163,255,0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      color: #c7d2fe;
-      flex-shrink: 0;
-      user-select: none;
-      background: radial-gradient(circle at 30% 0, rgba(129,140,248,0.9), rgba(15,23,42,1));
-      box-shadow: 0 0 12px rgba(129,140,248,0.6);
+      width:28px;height:28px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      border:1px solid #94a3b8;color:#cbd5e1;
     }
 
-    .line-text {
-      font-size: 13px;
-      white-space: pre-wrap;
-      word-break: break-word;
-      flex: 1;
-      transition: color .16s ease, opacity 0.16s ease;
-      color: var(--text-main);
-      max-width: 720px;
-    }
-
-    @media (max-width: 768px) {
-      .line-text { max-width: 100%; }
-    }
-
-    .line-row.row-active .line-text {
-      color: #e0f2fe;
-    }
+    .line-text { font-size:13px;flex:1;color:#e2e8f0; }
 
     .copy-btn {
-      flex-shrink: 0;
-      padding: 6px 16px;
-      font-size: 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,255,0.7);
-      background: rgba(15,23,42,0.95);
-      color: #e5e7eb;
-      cursor: pointer;
-      transition: background 0.12s ease, color 0.12s ease,
-                  border-color 0.12s ease, transform 0.08s ease,
-                  box-shadow 0.12s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .copy-btn::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent 20%, rgba(248,250,252,0.2) 50%, transparent 80%);
-      opacity: 0;
-      transform: translateX(-40%);
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      pointer-events: none;
-    }
-
-    .copy-btn:hover:enabled {
-      background: radial-gradient(circle at 0 0, rgba(59,130,246,0.4), rgba(15,23,42,1));
-      border-color: rgba(191,219,254,0.9);
-      color: #f9fafb;
-      transform: translateY(-1px);
-      box-shadow: 0 10px 22px rgba(15,23,42,0.9);
-    }
-
-    .copy-btn:hover:enabled::after {
-      opacity: 1;
-      transform: translateX(40%);
-    }
-
-    .copy-btn:disabled {
-      opacity: 0.6;
-      cursor: default;
-      box-shadow: none;
-    }
-
-    .empty-tip {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-align: center;
-      padding: 18px 0;
-    }
-
-    @media (max-width: 640px) {
-      body { padding: 16px; }
-      .app-shell { padding: 18px 14px 16px; border-radius: 18px; }
-      .output-wrapper { max-height: 360px; }
+      padding:6px 16px;
+      border-radius:999px;
+      border:1px solid #94a3b8;
+      background:#1e293b;
+      color:#e2e8f0;
+      cursor:pointer;
     }
   </style>
 </head>
+
 <body>
-  <div class="app-shell">
-    <div class="app-inner">
-      <header>
-        <div class="title-wrap">
-          <h1>逐句复制工具 <span class="badge">CRYPTO STYLE</span></h1>
-          <div class="subtitle">粘贴句子 → 生成列表（自动识别/保留前序号）→ 回车键循环复制。</div>
-        </div>
-        <div class="pill-stat">
-          <span class="dot-live"></span>
-          <span>Enter：自动复制下一句</span>
-        </div>
-      </header>
+<h1 id="mainTitle">黑狗创造东南亚辉煌</h1>
 
-      <textarea id="input" placeholder="在这里粘贴所有句子，一行一句&#10;支持两种：&#10;1）没有序号：工具自动生成 1,2,3...&#10;2）已有序号：如「3 文本…」「3. 文本…」「3: 文本…」，会按你写的序号展示（复制内容不带序号）"></textarea>
-
-      <div class="controls-row">
-        <div class="controls-left">
-          <button class="btn-secondary" id="paste">📋 粘贴并生成</button>
-          <button class="btn-primary" id="generate">⚡ 生成列表</button>
-          <button class="btn-danger" id="clear">🧹 清空</button>
-        </div>
-        <div class="hint">生成后，把光标移出输入框，直接按 Enter 就能依次复制下一句。</div>
+<div class="app-shell">
+  <div class="app-inner">
+    <header>
+      <div class="title-wrap">
+        <h1>逐句复制工具 <span class="badge">CRYPTO STYLE</span></h1>
+        <div class="subtitle">粘贴句子 → 生成列表 → 回车键循环复制。</div>
       </div>
+      <div class="pill-stat"><span class="dot-live"></span><span>Enter：自动复制下一句</span></div>
+    </header>
 
-      <div class="status">
-        <span id="status">还未生成内容</span>
-        <span class="hint">超过 500 行会有提示。</span>
-      </div>
+    <textarea id="input" placeholder="在这里粘贴句子，一行一句"></textarea>
 
-      <div class="progress-bar">
-        <div id="progress-inner" class="progress-inner"></div>
-      </div>
-
-      <div class="current-box">
-        <div class="current-label">
-          <span>当前句子（复制时自动更新）</span>
-          <span>适合练口语 / 朗读</span>
-        </div>
-        <div id="current-text" class="current-text">还没有选中任何句子。</div>
-      </div>
-
-      <div class="output-wrapper" id="output">
-        <div class="empty-tip">请先在上方粘贴文本，然后点击「生成列表」。</div>
+    <div class="controls-row">
+      <div class="controls-left">
+        <button class="btn-secondary" id="paste">📋 粘贴并生成</button>
+        <button class="btn-primary" id="generate">⚡ 生成列表</button>
+        <button class="btn-danger" id="clear">🧹 清空</button>
+        <button class="btn-primary" id="syncToggle" style="background:#4f46e5;">🔄 同步：关闭</button>
       </div>
     </div>
-  </div>
 
-<!-- 载入 Firebase -->
+    <div class="status">
+      <span id="status">还未生成内容</span>
+    </div>
+
+    <div class="progress-bar"><div id="progress-inner" class="progress-inner"></div></div>
+
+    <div class="current-box">
+      <div class="current-label">
+        <span>当前句子</span><span>适合练口语/朗读</span>
+      </div>
+      <div id="current-text" class="current-text">还没有选中任何句子。</div>
+    </div>
+
+    <div class="output-wrapper" id="output">
+      <div class="empty-tip">请先在上方粘贴文本，然后点击「生成列表」。</div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
 
-<!-- 配置 Firebase -->
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAhjKdLVR0JQVYtpRx0lMX6IiVrELDFegk",
-    authDomain: "heigou-5949f.firebaseapp.com",
-    databaseURL: "https://heigou-5949f-default-rtdb.firebaseio.com",
-    projectId: "heigou-5949f",
-    storageBucket: "heigou-5949f.appspot.com",
-    messagingSenderId: "915725885804",
-    appId: "1:915725885804:web:31f043de6ce7135bf12cad",
-    measurementId: "G-GK1684KLJJ"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyAhjKdLVR0JQVYtpRx0lMX6IiVrELDFegk",
+  authDomain: "heigou-5949f.firebaseapp.com",
+  databaseURL: "https://heigou-5949f-default-rtdb.firebaseio.com",
+  projectId: "heigou-5949f",
+  storageBucket: "heigou-5949f.appspot.com",
+  messagingSenderId: "915725885804",
+  appId: "1:915725885804:web:31f043de6ce7135bf12cad",
+  measurementId: "G-GK1684KLJJ"
+};
 
-  firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const syncRef = db.ref("syncRoom1");
+const clientId = Math.random().toString(36).slice(2);
 
-  const db = firebase.database();
-  const syncRef = db.ref("sentenceSyncRoom"); // 所有人同步的房间
-  const clientId = Math.random().toString(36).slice(2);
-  let syncing = false;
-</script>
+let syncEnabled = false;
+let syncing = false;
 
-<!-- 主逻辑 + 同步 -->
-<script>
+/* DOM */
 const input = document.getElementById('input');
 const output = document.getElementById('output');
 const generateBtn = document.getElementById('generate');
@@ -548,104 +316,91 @@ const clearBtn = document.getElementById('clear');
 const statusEl = document.getElementById('status');
 const progressInner = document.getElementById('progress-inner');
 const currentTextEl = document.getElementById('current-text');
+const syncToggle = document.getElementById('syncToggle');
 
 let activeRow = null;
 let lineRows = [];
 let currentIndex = -1;
 let totalCount = 0;
 
-/* ================= 同步函数 ================= */
+/* Sync toggle */
+syncToggle.addEventListener("click", () => {
+  syncEnabled = !syncEnabled;
+  syncToggle.textContent = syncEnabled ? "🔄 同步：开启" : "🔄 同步：关闭";
+});
 
-function syncFull(text, index) {
-  if (syncing) return;
-  syncRef.set({
-    text,
-    index,
-    from: clientId,
-    ts: Date.now()
-  });
+/* Sync send */
+function syncFull(text, index){
+  if (!syncEnabled || syncing) return;
+  syncRef.set({ text, index, from:clientId, ts:Date.now() });
 }
 
-function syncIndexOnly(index) {
-  if (syncing) return;
-  syncRef.update({
-    index,
-    from: clientId,
-    ts: Date.now()
-  });
+function syncIndexOnly(index){
+  if (!syncEnabled || syncing) return;
+  syncRef.update({ index, from:clientId, ts:Date.now() });
 }
 
-/* ================= 接收远程同步 ================= */
-
-syncRef.on("value", (snap) => {
+/* Sync receive */
+syncRef.on("value", snap => {
   const data = snap.val();
   if (!data) return;
+  if (!syncEnabled) return;
   if (data.from === clientId) return;
 
   syncing = true;
 
-  if (typeof data.text === "string" && data.text !== input.value) {
+  if (typeof data.text === "string" && data.text !== input.value){
     input.value = data.text;
     doGenerateFromText(data.text);
   }
-
-  if (typeof data.index === "number") {
+  if (typeof data.index === "number"){
     currentIndex = data.index;
-
-    if (lineRows[currentIndex]) {
-      markActiveRow(lineRows[currentIndex]);
-    } else {
-      currentTextEl.textContent = "还没有选中任何句子。";
-    }
-
+    if (lineRows[currentIndex]) markActiveRow(lineRows[currentIndex]);
     updateStatus();
   }
 
   syncing = false;
 });
 
-/* ================= 原功能逻辑 ================= */
-
-function updateStatus() {
-  if (!totalCount) {
-    statusEl.textContent = '还未生成内容';
-    progressInner.style.width = '0%';
+/* UI Logic */
+function updateStatus(){
+  if (!totalCount){
+    statusEl.textContent = "还未生成内容";
+    progressInner.style.width = "0%";
     return;
   }
-  const currentDisplay = currentIndex >= 0 ? currentIndex + 1 : 0;
-  statusEl.innerHTML = `当前进度：<strong>${currentDisplay}</strong> / <strong>${totalCount}</strong>`;
-  const percent = totalCount ? (currentDisplay / totalCount) * 100 : 0;
-  progressInner.style.width = percent + '%';
+  const now = currentIndex >= 0 ? currentIndex+1 : 0;
+  statusEl.textContent = `当前进度：${now} / ${totalCount}`;
+  progressInner.style.width = `${(now/totalCount)*100}%`;
 }
 
-function markActiveRow(row) {
+function markActiveRow(row){
   if (activeRow && activeRow !== row) activeRow.classList.remove('row-active');
   row.classList.add('row-active');
   activeRow = row;
 
-  const textEl = row.querySelector('.line-text');
-  currentTextEl.textContent = textEl ? textEl.textContent : "";
-
-  row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const txt = row.querySelector('.line-text');
+  currentTextEl.textContent = txt ? txt.textContent : "";
+  row.scrollIntoView({behavior:"smooth", block:"nearest"});
 }
 
-function createLineRow(text, displayNum, index) {
-  const row = document.createElement('div');
-  row.className = 'line-row';
+function createLineRow(text, num, index){
+  const row = document.createElement("div");
+  row.className = "line-row";
 
-  const num = document.createElement('div');
-  num.className = 'line-num';
-  num.textContent = displayNum;
+  const n = document.createElement("div");
+  n.className = "line-num";
+  n.textContent = num;
 
-  const span = document.createElement('span');
-  span.className = 'line-text';
+  const span = document.createElement("span");
+  span.className = "line-text";
   span.textContent = text;
 
-  const btn = document.createElement('button');
-  btn.className = 'copy-btn';
-  btn.textContent = '复制';
+  const btn = document.createElement("button");
+  btn.className = "copy-btn";
+  btn.textContent = "复制";
 
-  btn.addEventListener('click', async () => {
+  btn.addEventListener("click", async ()=>{
     await navigator.clipboard.writeText(text);
     currentIndex = index;
     markActiveRow(row);
@@ -654,76 +409,64 @@ function createLineRow(text, displayNum, index) {
 
     btn.textContent = "已复制";
     btn.disabled = true;
-    setTimeout(() => {
-      btn.textContent = "复制";
-      btn.disabled = false;
-    }, 600);
+    setTimeout(()=>{ btn.textContent="复制"; btn.disabled=false; },600);
   });
 
-  row.appendChild(num);
+  row.appendChild(n);
   row.appendChild(span);
   row.appendChild(btn);
   return row;
 }
 
-async function copyNextLine() {
+async function copyNextLine(){
   if (!lineRows.length) return;
-
   let next = currentIndex + 1;
   if (next >= lineRows.length) next = 0;
 
   const row = lineRows[next];
-  const span = row.querySelector('.line-text');
-  const text = span.textContent;
+  const txt = row.querySelector(".line-text").textContent;
 
-  await navigator.clipboard.writeText(text);
+  await navigator.clipboard.writeText(txt);
   currentIndex = next;
   markActiveRow(row);
   updateStatus();
   syncIndexOnly(next);
 }
 
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && document.activeElement !== input) {
+document.addEventListener("keydown", e=>{
+  if (e.key === "Enter" && document.activeElement !== input){
     e.preventDefault();
     copyNextLine();
   }
 });
 
-function doGenerateFromText(text) {
-  input.value = text;
+/* Generate list */
+function doGenerateFromText(text){
+  const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(l=>l);
+  output.innerHTML="";
+  lineRows=[];
+  activeRow=null;
+  currentIndex=-1;
+  totalCount=lines.length;
+  currentTextEl.textContent="还没有选中任何句子。";
 
-  const rawLines = text.split(/\r?\n/)
-    .map(l => l.trim())
-    .filter(l => l.length > 0);
-
-  output.innerHTML = "";
-  output.scrollTop = 0;
-  lineRows = [];
-  activeRow = null;
-  currentIndex = -1;
-  totalCount = rawLines.length;
-  currentTextEl.textContent = '还没有选中任何句子。';
-
-  if (!rawLines.length) {
-    output.innerHTML = '<div class="empty-tip">内容为空，请确认每句话占一行后再试一次。</div>';
+  if (!lines.length){
+    output.innerHTML = "<div class='empty-tip'>内容为空。</div>";
     updateStatus();
     return;
   }
 
-  rawLines.forEach((line, i) => {
+  lines.forEach((line,i)=>{
     const m = line.match(/^\s*(\d{1,3})\s*[:).、．\.]?\s+(.*)$/);
-    let displayNum, pureText;
-
-    if (m && m[2].trim().length > 0) {
-      displayNum = m[1];
-      pureText = m[2].trim();
+    let num, pure;
+    if (m && m[2].trim()){
+      num = m[1];
+      pure = m[2].trim();
     } else {
-      displayNum = String(i + 1);
-      pureText = line;
+      num = (i+1).toString();
+      pure = line;
     }
-
-    const row = createLineRow(pureText, displayNum, i);
+    const row = createLineRow(pure, num, i);
     lineRows.push(row);
     output.appendChild(row);
   });
@@ -731,37 +474,31 @@ function doGenerateFromText(text) {
   updateStatus();
 }
 
-generateBtn.addEventListener('click', () => {
+generateBtn.addEventListener("click", ()=>{
   doGenerateFromText(input.value);
   syncFull(input.value, -1);
 });
 
-pasteBtn.addEventListener('click', async () => {
-  if (navigator.clipboard && navigator.clipboard.readText) {
-    const text = await navigator.clipboard.readText();
-    if (text) {
-      doGenerateFromText(text);
-      syncFull(text, -1);
-      return;
-    }
+pasteBtn.addEventListener("click", async ()=>{
+  const txt = await navigator.clipboard.readText();
+  if (txt){
+    input.value = txt;
+    doGenerateFromText(txt);
+    syncFull(txt, -1);
   }
-  alert('剪贴板读取失败，请手动粘贴');
 });
 
-clearBtn.addEventListener('click', () => {
-  input.value = "";
-  output.innerHTML = '<div class="empty-tip">请先在上方粘贴文本，然后点击「生成列表」。</div>';
-  lineRows = [];
-  activeRow = null;
-  currentIndex = -1;
-  totalCount = 0;
-  currentTextEl.textContent = '还没有选中任何句子。';
+clearBtn.addEventListener("click", ()=>{
+  input.value="";
+  output.innerHTML="<div class='empty-tip'>请先在上方粘贴文本。</div>";
+  lineRows=[];
+  currentIndex=-1;
+  totalCount=0;
+  currentTextEl.textContent="还没有选中任何句子。";
   updateStatus();
   syncFull("", -1);
 });
 
-updateStatus();
 </script>
-
 </body>
 </html>
