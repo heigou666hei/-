@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>逐句复制工具 - Crypto Dashboard</title>
+  <style>
+    :root {
+      --bg-main: #05070b;
+      --bg-card: #0b0f18;
+      --bg-card-soft: #0f1624;
+      --border-subtle: #151b26;
+      --border-strong: #2b3b55;
+      --text-main: #e8ecff;
+      --text-muted: #8c98b8;
+      --accent-grad: linear-gradient(135deg, #2dd4ff, #5b7cfa, #c471ff);
+      --shadow-soft: 0 18px 45px rgba(0,0,0,0.75);
+      --radius-lg: 16px;
+      --radius-pill: 999px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(45,212,255,0.18), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(124,58,237,0.22), transparent 55%),
+        radial-gradient(circle at 50% 110%, rgba(244,63,94,0.18), transparent 55%),
+        var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 960px;
+      background: radial-gradient(circle at 0 0, rgba(148,163,255,0.12), transparent 55%) var(--bg-card);
+      border-radius: 24px;
+      border: 1px solid rgba(148,163,255,0.15);
+      box-shadow: var(--shadow-soft);
+      padding: 24px 24px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% -10%, rgba(56,189,248,0.16), transparent 55%),
+        radial-gradient(circle at 85% -20%, rgba(196,181,253,0.16), transparent 55%);
+      opacity: 0.8;
+      mix-blend-mode: screen;
+    }
+
+    .app-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+
+    .title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      padding: 2px 8px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148,163,255,0.5);
+      background: rgba(15,23,42,0.9);
+      color: #c7d2fe;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .pill-stat {
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      background: radial-gradient(circle at 0 0, rgba(45,212,191,0.12), transparent 60%) #020617;
+      border: 1px solid rgba(34,197,235,0.35);
+      font-size: 11px;
+      color: #a5f3fc;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .dot-live {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34,197,94,0.8);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 170px;
+      padding: 12px 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      resize: vertical;
+      outline: none;
+      background: radial-gradient(circle at 0 0, rgba(148,163,255,0.12), transparent 65%) var(--bg-card-soft);
+      color: var(--text-main);
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.08s ease;
+    }
+
+    textarea:focus {
+      border-color: rgba(94,234,212,0.9);
+      box-shadow: 0 0 0 1px rgba(94,234,212,0.6), 0 18px 40px rgba(15,23,42,0.9);
+      transform: translateY(-1px);
+    }
+
+    .controls-row {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .controls-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      padding: 7px 18px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background-image: var(--accent-grad);
+      color: #f9fafb;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.02em;
+      box-shadow:
+        0 0 0 1px rgba(129,140,248,0.6),
+        0 14px 30px rgba(37,99,235,0.45);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.12s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 20%, rgba(248,250,252,0.28) 50%, transparent 80%);
+      opacity: 0;
+      transform: translateX(-40%);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+      box-shadow:
+        0 0 0 1px rgba(191,219,254,0.65),
+        0 18px 40px rgba(37,99,235,0.55);
+    }
+
+    .btn-primary:hover:not(:disabled)::after {
+      opacity: 1;
+      transform: translateX(40%);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.55;
+      cursor: default;
+      box-shadow: 0 0 0 1px rgba(148,163,255,0.4);
+    }
+
+    .btn-secondary {
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148,163,255,0.7);
+      background: rgba(15,23,42,0.95);
+      color: #e5e7eb;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(129,140,248,0.25);
+      border-color: rgba(191,219,254,0.9);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(248,113,113,0.8);
+      background: rgba(30,7,15,0.95);
+      color: #fecaca;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+    }
+
+    .btn-danger:hover {
+      background: rgba(248,113,113,0.2);
+      border-color: rgba(252,165,165,1);
+      transform: translateY(-1px);
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .status strong {
+      color: #e5e7eb;
+    }
+
+    .progress-bar {
+      margin-top: 6px;
+      height: 5px;
+      background: radial-gradient(circle at 0 0, rgba(51,65,85,0.9), transparent 85%);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(30,64,175,0.6);
+    }
+
+    .progress-inner {
+      height: 100%;
+      width: 0%;
+      background-image: var(--accent-grad);
+      box-shadow: 0 0 12px rgba(56,189,248,0.8);
+      transition: width 0.18s ease-out;
+    }
+
+    .current-box {
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.18), transparent 70%) rgba(15,23,42,0.95);
+      border: 1px solid rgba(59,130,246,0.7);
+      box-shadow: 0 10px 26px rgba(15,23,42,0.9);
+    }
+
+    .current-label {
+      font-size: 11px;
+      color: #93c5fd;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .current-label span:last-child {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .current-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #e5e7eb;
+      max-height: 120px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .output-wrapper {
+      margin-top: 16px;
+      background: radial-gradient(circle at 0 0, rgba(15,23,42,0.9), transparent 70%) var(--bg-card-soft);
+      border-radius: 18px;
+      padding: 10px 10px;
+      max-height: 390px;
+      overflow: auto;
+      border: 1px solid rgba(30,64,175,0.75);
+      box-shadow: 0 18px 40px rgba(15,23,42,0.8);
+    }
+
+    .output-wrapper::-webkit-scrollbar {
+      width: 6px;
+    }
+    .output-wrapper::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(56,189,248,0.8), rgba(129,140,248,0.8));
+      border-radius: 999px;
+    }
+
+    .line-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 8px;
+      border-bottom: 1px dashed rgba(30,41,59,0.85);
+      transition: background 0.12s ease, transform 0.08s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      border-radius: 12px;
+      margin-bottom: 2px;
+    }
+
+    .line-row:last-child {
+      border-bottom: none;
+    }
+
+    .line-row:hover {
+      background: radial-gradient(circle at 0 0, rgba(37,99,235,0.18), transparent 70%);
+      border-color: rgba(96,165,250,0.8);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(15,23,42,0.85);
+    }
+
+    .line-row.row-active {
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.24), transparent 70%);
+      border-color: rgba(56,189,248,0.9);
+      box-shadow:
+        0 0 0 1px rgba(34,211,238,0.7),
+        0 12px 30px rgba(15,23,42,0.95);
+    }
+
+    .line-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(148,163,255,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #c7d2fe;
+      flex-shrink: 0;
+      user-select: none;
+      background: radial-gradient(circle at 30% 0, rgba(129,140,248,0.9), rgba(15,23,42,1));
+      box-shadow: 0 0 12px rgba(129,140,248,0.6);
+    }
+
+    .line-text {
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      flex: 1;
+      transition: color .16s ease, opacity 0.16s ease;
+      color: var(--text-main);
+      max-width: 720px;
+    }
+
+    @media (max-width: 768px) {
+      .line-text { max-width: 100%; }
+    }
+
+    .line-row.row-active .line-text {
+      color: #e0f2fe;
+    }
+
+    .copy-btn {
+      flex-shrink: 0;
+      padding: 6px 16px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,255,0.7);
+      background: rgba(15,23,42,0.95);
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: background 0.12s ease, color 0.12s ease,
+                  border-color 0.12s ease, transform 0.08s ease,
+                  box-shadow 0.12s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .copy-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 20%, rgba(248,250,252,0.2) 50%, transparent 80%);
+      opacity: 0;
+      transform: translateX(-40%);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+    }
+
+    .copy-btn:hover:enabled {
+      background: radial-gradient(circle at 0 0, rgba(59,130,246,0.4), rgba(15,23,42,1));
+      border-color: rgba(191,219,254,0.9);
+      color: #f9fafb;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(15,23,42,0.9);
+    }
+
+    .copy-btn:hover:enabled::after {
+      opacity: 1;
+      transform: translateX(40%);
+    }
+
+    .copy-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .empty-tip {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 18px 0;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 16px; }
+      .app-shell { padding: 18px 14px 16px; border-radius: 18px; }
+      .output-wrapper { max-height: 360px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="app-inner">
+      <header>
+        <div class="title-wrap">
+          <h1>逐句复制工具 <span class="badge">CRYPTO STYLE</span></h1>
+          <div class="subtitle">粘贴句子 → 生成列表（自动识别/保留前序号）→ 回车键循环复制。</div>
+        </div>
+        <div class="pill-stat">
+          <span class="dot-live"></span>
+          <span>Enter：自动复制下一句</span>
+        </div>
+      </header>
+
+      <textarea id="input" placeholder="在这里粘贴所有句子，一行一句&#10;支持两种：&#10;1）没有序号：工具自动生成 1,2,3...&#10;2）已有序号：如「3 文本…」「3. 文本…」「3: 文本…」，会按你写的序号展示（复制内容不带序号）"></textarea>
+
+      <div class="controls-row">
+        <div class="controls-left">
+          <button class="btn-secondary" id="paste">📋 粘贴并生成</button>
+          <button class="btn-primary" id="generate">⚡ 生成列表</button>
+          <button class="btn-danger" id="clear">🧹 清空</button>
+        </div>
+        <div class="hint">生成后，把光标移出输入框，直接按 Enter 就能依次复制下一句。</div>
+      </div>
+
+      <div class="status">
+        <span id="status">还未生成内容</span>
+        <span class="hint">超过 500 行会有提示。</span>
+      </div>
+
+      <div class="progress-bar">
+        <div id="progress-inner" class="progress-inner"></div>
+      </div>
+
+      <div class="current-box">
+        <div class="current-label">
+          <span>当前句子（复制时自动更新）</span>
+          <span>适合练口语 / 朗读</span>
+        </div>
+        <div id="current-text" class="current-text">还没有选中任何句子。</div>
+      </div>
+
+      <div class="output-wrapper" id="output">
+        <div class="empty-tip">请先在上方粘贴文本，然后点击「生成列表」。</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
+    const generateBtn = document.getElementById('generate');
+    const pasteBtn = document.getElementById('paste');
+    const clearBtn = document.getElementById('clear');
+    const statusEl = document.getElementById('status');
+    const progressInner = document.getElementById('progress-inner');
+    const currentTextEl = document.getElementById('current-text');
+
+    let activeRow = null;
+    let lineRows = [];
+    let currentIndex = -1;
+    let totalCount = 0;
+
+    function updateStatus() {
+      if (!totalCount) {
+        statusEl.textContent = '还未生成内容';
+        progressInner.style.width = '0%';
+        return;
+      }
+      const currentDisplay = currentIndex >= 0 ? currentIndex + 1 : 0;
+      statusEl.innerHTML = `当前进度：<strong>${currentDisplay}</strong> / <strong>${totalCount}</strong>`;
+      const percent = totalCount ? (currentDisplay / totalCount) * 100 : 0;
+      progressInner.style.width = percent + '%';
+    }
+
+    function markActiveRow(row) {
+      if (activeRow && activeRow !== row) {
+        activeRow.classList.remove('row-active');
+      }
+      row.classList.add('row-active');
+      activeRow = row;
+
+      const textEl = row.querySelector('.line-text');
+      if (textEl) currentTextEl.textContent = textEl.textContent || '';
+
+      row.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+    }
+
+    // text: 正文（不含序号），displayNum: 圆圈里展示的序号字符串
+    function createLineRow(text, displayNum, index) {
+      const row = document.createElement('div');
+      row.className = 'line-row';
+
+      const num = document.createElement('div');
+      num.className = 'line-num';
+      num.textContent = displayNum;
+
+      const span = document.createElement('span');
+      span.className = 'line-text';
+      span.textContent = text;
+
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = '复制';
+
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(text); // 只复制正文
+          currentIndex = index;
+          markActiveRow(row);
+          updateStatus();
+          const old = btn.textContent;
+          btn.textContent = '已复制';
+          btn.disabled = true;
+          setTimeout(() => {
+            btn.textContent = old;
+            btn.disabled = false;
+          }, 650);
+        } catch (e) {
+          alert('复制失败，可能浏览器不支持，请手动选择文本复制。');
+        }
+      });
+
+      row.appendChild(num);
+      row.appendChild(span);
+      row.appendChild(btn);
+      return row;
+    }
+
+    async function copyNextLine() {
+      if (!lineRows.length) return;
+
+      let next = currentIndex + 1;
+      if (next >= lineRows.length) next = 0;
+
+      const row = lineRows[next];
+      const span = row.querySelector('.line-text');
+      if (!span) return;
+
+      const text = span.textContent;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        currentIndex = next;
+        markActiveRow(row);
+        updateStatus();
+
+        const btn = row.querySelector('.copy-btn');
+        if (btn) {
+          const old = btn.textContent;
+          btn.textContent = '已复制';
+          btn.disabled = true;
+          setTimeout(() => {
+            btn.textContent = old;
+            btn.disabled = false;
+          }, 650);
+        }
+      } catch (e) {
+        alert('复制失败，可能浏览器不支持，请手动选择文本复制。');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (
+        e.key === 'Enter' &&
+        !e.isComposing &&
+        !e.shiftKey &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.altKey
+      ) {
+        if (document.activeElement === input) return;
+        e.preventDefault();
+        copyNextLine();
+      }
+    });
+
+    function doGenerateFromText(text) {
+      input.value = text;
+
+      const rawLines = text
+        .split(/\r?\n/)
+        .map(l => l.trim())
+        .filter(l => l.length > 0);
+
+      output.innerHTML = '';
+      output.scrollTop = 0;
+      lineRows = [];
+      activeRow = null;
+      currentIndex = -1;
+      totalCount = rawLines.length;
+      currentTextEl.textContent = '还没有选中任何句子。';
+
+      if (!rawLines.length) {
+        totalCount = 0;
+        output.innerHTML = '<div class="empty-tip">内容为空，请确认每句话占一行后再试一次。</div>';
+        updateStatus();
+        return;
+      }
+
+      if (totalCount > 500) {
+        alert(`当前共有 ${totalCount} 行，内容较多，生成和滚动时可能会略有延迟。`);
+      }
+
+      // 解析每行：如果以 1~3 位数字开头 + 可选分隔符，则视为已有序号，否则自动编号
+      rawLines.forEach((line, i) => {
+        // 支持：1 文本、1. 文本、1: 文本、1）文本、1、文本 等
+        const m = line.match(/^\s*(\d{1,3})\s*[:).、．\.]?\s+(.*)$/);
+        let displayNum;
+        let pureText;
+
+        if (m && m[2].trim().length > 0) {
+          displayNum = m[1];           // 使用原来的数字
+          pureText = m[2].trim();      // 去掉前面的数字和符号
+        } else {
+          displayNum = String(i + 1);  // 自动生成序号
+          pureText = line;
+        }
+
+        const row = createLineRow(pureText, displayNum, i);
+        lineRows.push(row);
+        output.appendChild(row);
+      });
+
+      updateStatus();
+    }
+
+    generateBtn.addEventListener('click', () => {
+      if (generateBtn.disabled) return;
+
+      const oldText = generateBtn.textContent;
+      generateBtn.disabled = true;
+      generateBtn.textContent = '生成中…';
+
+      doGenerateFromText(input.value);
+
+      setTimeout(() => {
+        generateBtn.disabled = false;
+        generateBtn.textContent = oldText;
+      }, 400);
+    });
+
+    // 📋 粘贴 + 自动生成
+    pasteBtn.addEventListener('click', async () => {
+      // 尝试使用 Clipboard API 一键读取并生成
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (!text) {
+            alert('剪贴板里没有文本内容。');
+            return;
+          }
+          doGenerateFromText(text);
+          return;
+        } catch (e) {
+          // 被浏览器拦截 / 权限拒绝
+          input.focus();
+          alert('浏览器未允许网页直接读取剪贴板。\n请按 Ctrl + V 把内容粘贴到上方输入框后，再点击「生成列表」。');
+          return;
+        }
+      } else {
+        // 不支持 Clipboard API
+        input.focus();
+        alert('当前浏览器不支持一键读取剪贴板，请手动 Ctrl + V 粘贴后点击「生成列表」。');
+      }
+    });
+
+    // 🧹 清空：清输入 + 清列表 + 清状态
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      output.innerHTML = '<div class="empty-tip">请先在上方粘贴文本，然后点击「生成列表」。</div>';
+      output.scrollTop = 0;
+      lineRows = [];
+      activeRow = null;
+      currentIndex = -1;
+      totalCount = 0;
+      currentTextEl.textContent = '还没有选中任何句子。';
+      updateStatus();
+    });
+
+    updateStatus();
+  </script>
+</body>
+</html>
