@@ -5,54 +5,82 @@
   <title>逐句复制工具 - Crypto Dashboard</title>
   <style>
     :root {
-      --bg-main: #05070b;
-      --bg-card: #0b0f18;
-      --bg-card-soft: #0f1624;
-      --border-subtle: #151b26;
-      --border-strong: #2b3b55;
-      --text-main: #e8ecff;
-      --text-muted: #8c98b8;
-      --accent-grad: linear-gradient(135deg, #2dd4ff, #5b7cfa, #c471ff);
-      --shadow-soft: 0 18px 45px rgba(0,0,0,0.75);
-      --radius-lg: 16px;
+      --bg-main: #020617;
+      --bg-gradient-1: rgba(56,189,248,0.35);
+      --bg-gradient-2: rgba(129,140,248,0.4);
+      --bg-gradient-3: rgba(244,114,182,0.25);
+      --bg-card: #020617;
+      --bg-card-soft: #020617;
+      --border-subtle: #1f2937;
+      --text-main: #e5f0ff;
+      --text-muted: #9ca3af;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56,189,248,0.12);
+      --accent-strong: #0ea5e9;
+      --shadow-soft: 0 24px 60px rgba(15,23,42,0.9);
+      --radius-lg: 18px;
       --radius-pill: 999px;
     }
 
     * { box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto,
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto,
         "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
       margin: 0;
       min-height: 100vh;
       background:
-        radial-gradient(circle at 0% 0%, rgba(45,212,255,0.18), transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(124,58,237,0.22), transparent 55%),
-        radial-gradient(circle at 50% 110%, rgba(244,63,94,0.18), transparent 55%),
+        radial-gradient(circle at 0% 0%, var(--bg-gradient-1), transparent 55%),
+        radial-gradient(circle at 100% 0%, var(--bg-gradient-2), transparent 55%),
+        radial-gradient(circle at 50% 110%, var(--bg-gradient-3), transparent 60%),
         var(--bg-main);
       color: var(--text-main);
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 32px 16px;
+      padding: 28px 16px 40px;
     }
 
-    h1#mainTitle {
+    /* 全局滚动条美化 */
+    *::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    *::-webkit-scrollbar-track {
+      background: rgba(15,23,42,0.9);
+      border-radius: 999px;
+    }
+    *::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background-image: linear-gradient(180deg, #38bdf8, #6366f1);
+      box-shadow: 0 0 8px rgba(56,189,248,0.7);
+    }
+
+    #mainTitle {
       text-align:center;
-      color:#fff;
+      color:#f9fafb;
       font-size:32px;
-      margin-bottom:20px;
-      font-weight:bold;
+      margin: 0 0 20px;
+      font-weight:800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-shadow:
+        0 0 18px rgba(56,189,248,0.75),
+        0 0 32px rgba(59,130,246,0.85);
     }
 
     .app-shell {
       width: 100%;
-      max-width: 960px;
-      background: radial-gradient(circle at 0 0, rgba(148,163,255,0.12), transparent 55%) var(--bg-card);
-      border-radius: 24px;
-      border: 1px solid rgba(148,163,255,0.15);
+      max-width: 980px;
+      background:
+        radial-gradient(circle at 0 0, rgba(59,130,246,0.24), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(14,165,233,0.2), transparent 55%),
+        radial-gradient(circle at 50% 110%, rgba(236,72,153,0.18), transparent 60%),
+        var(--bg-card);
+      border-radius: 26px;
+      border: 1px solid rgba(148,163,255,0.25);
       box-shadow: var(--shadow-soft);
-      padding: 24px 24px 20px;
+      padding: 22px 22px 20px;
       position: relative;
       overflow: hidden;
     }
@@ -63,10 +91,10 @@
       inset: 0;
       pointer-events: none;
       background:
-        radial-gradient(circle at 15% -10%, rgba(56,189,248,0.16), transparent 55%),
-        radial-gradient(circle at 85% -20%, rgba(196,181,253,0.16), transparent 55%);
-      opacity: 0.8;
+        radial-gradient(circle at 15% -10%, rgba(59,130,246,0.35), transparent 60%),
+        radial-gradient(circle at 85% -20%, rgba(56,189,248,0.3), transparent 65%);
       mix-blend-mode: screen;
+      opacity: 0.85;
     }
 
     .app-inner { position: relative; z-index: 1; }
@@ -77,30 +105,43 @@
       align-items: center;
       margin-bottom: 18px;
       gap: 12px;
+      flex-wrap: wrap;
     }
 
     .title-wrap { display: flex; flex-direction: column; gap: 4px; }
 
-    h1 { margin: 0; font-size: 20px; letter-spacing: 0.03em; display: flex; align-items: center; gap: 8px; }
-
-    .badge {
-      padding: 2px 8px;
-      font-size: 10px;
-      text-transform: uppercase;
+    .app-title {
+      margin: 0;
+      font-size: 20px;
       letter-spacing: 0.08em;
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(148,163,255,0.5);
-      background: rgba(15,23,42,0.9);
-      color: #c7d2fe;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
     }
 
-    .subtitle { font-size: 12px; color: var(--text-muted); }
+    .badge {
+      padding: 3px 8px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(191,219,254,0.9);
+      background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,41,59,0.96));
+      color: #bfdbfe;
+      box-shadow: 0 0 14px rgba(59,130,246,0.85);
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
 
     .pill-stat {
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: var(--radius-pill);
-      background: radial-gradient(circle at 0 0, rgba(45,212,191,0.12), transparent 60%) #020617;
-      border: 1px solid rgba(34,197,235,0.35);
+      background: radial-gradient(circle at 0 0, rgba(45,212,191,0.26), transparent 60%) #020617;
+      border: 1px solid rgba(45,212,191,0.55);
       font-size: 11px;
       color: #a5f3fc;
       display: flex;
@@ -110,36 +151,51 @@
     }
 
     .dot-live {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 999px;
       background: #22c55e;
-      box-shadow: 0 0 8px rgba(34,197,94,0.8);
+      box-shadow: 0 0 12px rgba(22,163,74,0.9);
     }
 
     textarea {
       width: 100%;
       min-height: 170px;
-      padding: 12px 12px;
+      padding: 13px 13px;
       font-size: 13px;
       line-height: 1.5;
       border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
+      border: 1px solid rgba(148,163,255,0.45);
       resize: vertical;
       outline: none;
-      background: radial-gradient(circle at 0 0, rgba(148,163,255,0.12), transparent 65%) var(--bg-card-soft);
+      background:
+        radial-gradient(circle at 0 0, rgba(148,163,255,0.18), transparent 65%),
+        radial-gradient(circle at 100% 100%, rgba(56,189,248,0.18), transparent 70%),
+        #020617;
       color: var(--text-main);
-      transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.08s ease;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.95);
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.08s ease,
+                  background 0.2s ease;
     }
 
     textarea:focus {
-      border-color: rgba(94,234,212,0.9);
-      box-shadow: 0 0 0 1px rgba(94,234,212,0.6), 0 18px 40px rgba(15,23,42,0.9);
+      border-color: rgba(56,189,248,0.95);
+      box-shadow:
+        0 0 0 1px rgba(56,189,248,0.9),
+        0 22px 55px rgba(15,23,42,0.98);
       transform: translateY(-1px);
+      background:
+        radial-gradient(circle at 0 0, rgba(129,140,248,0.28), transparent 65%),
+        radial-gradient(circle at 100% 100%, rgba(45,212,191,0.24), transparent 70%),
+        #020617;
+    }
+
+    textarea::placeholder {
+      color: rgba(148,163,184,0.9);
     }
 
     .controls-row {
-      margin-top: 10px;
+      margin-top: 11px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -153,352 +209,678 @@
       gap: 8px;
       flex-wrap: wrap;
     }
-    .btn-primary, .btn-secondary, .btn-danger {
+
+    button {
+      font-family: inherit;
+    }
+
+    .btn-primary {
       padding: 7px 18px;
       border-radius: var(--radius-pill);
+      border: none;
+      background-image: linear-gradient(135deg, #38bdf8, #6366f1, #ec4899);
+      color: #f9fafb;
       font-size: 13px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: 0.15s ease;
+      letter-spacing: 0.04em;
+      box-shadow:
+        0 0 0 1px rgba(129,140,248,0.65),
+        0 16px 36px rgba(37,99,235,0.6);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.12s ease;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+    }
+
+    .btn-primary::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 20%, rgba(248,250,252,0.35) 50%, transparent 80%);
+      opacity: 0;
+      transform: translateX(-40%);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+      box-shadow:
+        0 0 0 1px rgba(191,219,254,0.9),
+        0 22px 46px rgba(30,64,175,0.85);
+    }
+
+    .btn-primary:hover:not(:disabled)::after {
+      opacity: 1;
+      transform: translateX(40%);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.55;
+      cursor: default;
+      box-shadow: 0 0 0 1px rgba(148,163,255,0.5);
     }
 
     .btn-secondary {
-      border: 1px solid rgba(148,163,255,0.7);
-      background: rgba(15,23,42,0.95);
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148,163,255,0.75);
+      background: radial-gradient(circle at 0 0, rgba(30,64,175,0.75), rgba(15,23,42,0.98));
       color: #e5e7eb;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+    }
+
+    .btn-secondary:hover {
+      background: radial-gradient(circle at 0 0, rgba(59,130,246,0.9), rgba(15,23,42,1));
+      border-color: rgba(191,219,254,1);
+      transform: translateY(-1px);
     }
 
     .btn-danger {
-      border: 1px solid rgba(248,113,113,0.8);
-      background: rgba(30,7,15,0.95);
-      color: #fecaca;
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(248,113,113,0.85);
+      background: radial-gradient(circle at 0 0, rgba(248,113,113,0.35), rgba(15,23,42,0.98));
+      color: #fee2e2;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
     }
 
-    .btn-primary {
-      background-image: var(--accent-grad);
-      border: none;
-      color: #fff;
+    .btn-danger:hover {
+      background: radial-gradient(circle at 0 0, rgba(248,113,113,0.5), rgba(15,23,42,1));
+      border-color: rgba(252,165,165,1);
+      transform: translateY(-1px);
     }
 
-    .status { margin-top: 10px; font-size: 12px; color: var(--text-muted); display:flex; justify-content:space-between; }
-    .progress-bar { margin-top:6px; height:5px; background:#334155; border-radius:999px; overflow:hidden; }
-    .progress-inner { height:100%; width:0%; background-image:var(--accent-grad); transition:0.2s ease; }
+    .hint {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .status strong {
+      color: #e5e7eb;
+    }
+
+    .progress-bar {
+      margin-top: 6px;
+      height: 5px;
+      background: radial-gradient(circle at 0 0, rgba(30,64,175,0.9), transparent 90%);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(30,64,175,0.7);
+    }
+
+    .progress-inner {
+      height: 100%;
+      width: 0%;
+      background-image: linear-gradient(90deg, #22c55e, #38bdf8, #6366f1, #a855f7);
+      box-shadow: 0 0 16px rgba(56,189,248,0.95);
+      transition: width 0.18s ease-out;
+    }
 
     .current-box {
       margin-top: 14px;
       padding: 10px 12px;
-      border-radius: 16px;
-      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.18), transparent 70%) rgba(15,23,42,0.95);
-      border: 1px solid rgba(59,130,246,0.7);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 0 0, rgba(56,189,248,0.22), transparent 72%),
+        radial-gradient(circle at 100% 100%, rgba(79,70,229,0.26), transparent 70%),
+        rgba(15,23,42,0.98);
+      border: 1px solid rgba(59,130,246,0.8);
+      box-shadow: 0 16px 40px rgba(15,23,42,0.96);
     }
 
-    .current-label { font-size: 11px; color:#93c5fd; margin-bottom:4px; display:flex; justify-content:space-between; }
-    .current-text { font-size:15px; line-height:1.6; color:#e5e7eb; max-height:120px; overflow:auto; }
+    .current-label {
+      font-size: 11px;
+      color: #bfdbfe;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .current-label span:last-child {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .current-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #e5e7eb;
+      max-height: 130px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
 
     .output-wrapper {
       margin-top: 16px;
-      background: rgba(15,23,42,0.95);
-      border-radius:18px;
-      padding:10px;
-      max-height:390px;
-      overflow:auto;
-      border:1px solid rgba(30,64,175,0.75);
+      background:
+        radial-gradient(circle at 0 0, rgba(30,64,175,0.46), transparent 70%),
+        radial-gradient(circle at 100% 100%, rgba(56,189,248,0.28), transparent 72%),
+        var(--bg-card-soft);
+      border-radius: 20px;
+      padding: 10px 10px;
+      max-height: 400px;
+      overflow: auto;
+      border: 1px solid rgba(30,64,175,0.85);
+      box-shadow: 0 22px 55px rgba(15,23,42,0.98);
     }
 
     .line-row {
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:7px 8px;
-      border-bottom:1px dashed #1e293b;
-      border-radius:12px;
-      margin-bottom:2px;
-      transition:0.12s ease;
-    }
-    .line-row.row-active {
-      background:#0c4a6e;
-      border-color:#38bdf8;
-    }
-    .line-num {
-      width:28px;height:28px;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      border:1px solid #94a3b8;color:#cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 8px;
+      border-bottom: 1px dashed rgba(30,41,59,0.9);
+      transition: background 0.12s ease, transform 0.08s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      border-radius: 12px;
+      margin-bottom: 2px;
     }
 
-    .line-text { font-size:13px;flex:1;color:#e2e8f0; }
+    .line-row:last-child {
+      border-bottom: none;
+    }
+
+    .line-row:hover {
+      background: radial-gradient(circle at 0 0, rgba(37,99,235,0.35), transparent 72%);
+      border-color: rgba(96,165,250,0.95);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(15,23,42,0.95);
+    }
+
+    .line-row.row-active {
+      background:
+        radial-gradient(circle at 0 0, rgba(56,189,248,0.38), transparent 75%),
+        rgba(15,23,42,0.98);
+      border-color: rgba(56,189,248,0.95);
+      box-shadow:
+        0 0 0 1px rgba(56,189,248,0.85),
+        0 16px 40px rgba(15,23,42,1);
+    }
+
+    .line-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(191,219,254,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #e0f2fe;
+      flex-shrink: 0;
+      user-select: none;
+      background: radial-gradient(circle at 30% 0, rgba(129,140,248,1), rgba(15,23,42,1));
+      box-shadow: 0 0 14px rgba(129,140,248,0.85);
+    }
+
+    .line-text {
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      flex: 1;
+      transition: color .16s ease, opacity 0.16s ease;
+      color: var(--text-main);
+      max-width: 720px;
+    }
+
+    .line-row.row-active .line-text {
+      color: #f9fafb;
+    }
 
     .copy-btn {
-      padding:6px 16px;
-      border-radius:999px;
-      border:1px solid #94a3b8;
-      background:#1e293b;
-      color:#e2e8f0;
-      cursor:pointer;
+      flex-shrink: 0;
+      padding: 6px 16px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(191,219,254,0.9);
+      background: radial-gradient(circle at 0 0, rgba(15,23,42,1), rgba(30,64,175,0.9));
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: background 0.12s ease, color 0.12s ease,
+                  border-color 0.12s ease, transform 0.08s ease,
+                  box-shadow 0.12s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .copy-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 20%, rgba(248,250,252,0.28) 50%, transparent 80%);
+      opacity: 0;
+      transform: translateX(-40%);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+    }
+
+    .copy-btn:hover:enabled {
+      background: radial-gradient(circle at 0 0, rgba(59,130,246,0.9), rgba(15,23,42,1));
+      border-color: rgba(191,219,254,1);
+      color: #f9fafb;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(15,23,42,0.98);
+    }
+
+    .copy-btn:hover:enabled::after {
+      opacity: 1;
+      transform: translateX(40%);
+    }
+
+    .copy-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .empty-tip {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 18px 0;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 18px 12px 32px; }
+      .app-shell { padding: 18px 14px 16px; border-radius: 20px; }
+      header { flex-direction: column; align-items: flex-start; }
+      .output-wrapper { max-height: 360px; }
     }
   </style>
 </head>
 
 <body>
-<h1 id="mainTitle">黑狗创造东南亚辉煌</h1>
+  <h1 id="mainTitle">黑狗创造东南亚辉煌</h1>
 
-<div class="app-shell">
-  <div class="app-inner">
-    <header>
-      <div class="title-wrap">
-        <h1>逐句复制工具 <span class="badge">CRYPTO STYLE</span></h1>
-        <div class="subtitle">粘贴句子 → 生成列表 → 回车键循环复制。</div>
+  <div class="app-shell">
+    <div class="app-inner">
+      <header>
+        <div class="title-wrap">
+          <h2 class="app-title">逐句复制工具 <span class="badge">CRYPTO STYLE</span></h2>
+          <div class="subtitle">粘贴句子 → 生成列表（自动识别/保留前序号）→ 回车键循环复制（支持多人同步）。</div>
+        </div>
+        <div class="pill-stat">
+          <span class="dot-live"></span>
+          <span>Enter：自动复制下一句</span>
+        </div>
+      </header>
+
+      <textarea id="input" placeholder="在这里粘贴所有句子，一行一句&#10;支持两种：&#10;1）没有序号：工具自动生成 1,2,3...&#10;2）已有序号：如「3 文本…」「3. 文本…」「3: 文本…」，会按你写的序号展示（复制内容不带序号）"></textarea>
+
+      <div class="controls-row">
+        <div class="controls-left">
+          <button class="btn-secondary" id="paste">📋 粘贴并生成</button>
+          <button class="btn-primary" id="generate">⚡ 生成列表</button>
+          <button class="btn-danger" id="clear">🧹 清空</button>
+          <button class="btn-primary" id="syncToggle" style="padding-inline:14px;background-image:linear-gradient(135deg,#4f46e5,#6366f1);">
+            🔄 同步：关闭
+          </button>
+        </div>
+        <div class="hint">同步关闭时，你自己玩自己的；同步开启后，全员跟随同一行。</div>
       </div>
-      <div class="pill-stat"><span class="dot-live"></span><span>Enter：自动复制下一句</span></div>
-    </header>
 
-    <textarea id="input" placeholder="在这里粘贴句子，一行一句"></textarea>
-
-    <div class="controls-row">
-      <div class="controls-left">
-        <button class="btn-secondary" id="paste">📋 粘贴并生成</button>
-        <button class="btn-primary" id="generate">⚡ 生成列表</button>
-        <button class="btn-danger" id="clear">🧹 清空</button>
-        <button class="btn-primary" id="syncToggle" style="background:#4f46e5;">🔄 同步：关闭</button>
+      <div class="status">
+        <span id="status">还未生成内容</span>
+        <span class="hint">回车键只在页面焦点不在输入框时生效。</span>
       </div>
-    </div>
 
-    <div class="status">
-      <span id="status">还未生成内容</span>
-    </div>
-
-    <div class="progress-bar"><div id="progress-inner" class="progress-inner"></div></div>
-
-    <div class="current-box">
-      <div class="current-label">
-        <span>当前句子</span><span>适合练口语/朗读</span>
+      <div class="progress-bar">
+        <div id="progress-inner" class="progress-inner"></div>
       </div>
-      <div id="current-text" class="current-text">还没有选中任何句子。</div>
-    </div>
 
-    <div class="output-wrapper" id="output">
-      <div class="empty-tip">请先在上方粘贴文本，然后点击「生成列表」。</div>
+      <div class="current-box">
+        <div class="current-label">
+          <span>当前句子（复制时自动更新）</span>
+          <span>适合练口语 / 朗读</span>
+        </div>
+        <div id="current-text" class="current-text">还没有选中任何句子。</div>
+      </div>
+
+      <div class="output-wrapper" id="output">
+        <div class="empty-tip">请先在上方粘贴文本，然后点击「生成列表」。</div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyAhjKdLVR0JQVYtpRx0lMX6IiVrELDFegk",
-  authDomain: "heigou-5949f.firebaseapp.com",
-  databaseURL: "https://heigou-5949f-default-rtdb.firebaseio.com",
-  projectId: "heigou-5949f",
-  storageBucket: "heigou-5949f.appspot.com",
-  messagingSenderId: "915725885804",
-  appId: "1:915725885804:web:31f043de6ce7135bf12cad",
-  measurementId: "G-GK1684KLJJ"
-};
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAhjKdLVR0JQVYtpRx0lMX6IiVrELDFegk",
+      authDomain: "heigou-5949f.firebaseapp.com",
+      databaseURL: "https://heigou-5949f-default-rtdb.firebaseio.com",
+      projectId: "heigou-5949f",
+      storageBucket: "heigou-5949f.appspot.com",
+      messagingSenderId: "915725885804",
+      appId: "1:915725885804:web:31f043de6ce7135bf12cad",
+      measurementId: "G-GK1684KLJJ"
+    };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const syncRef = db.ref("syncRoom1");
-const clientId = Math.random().toString(36).slice(2);
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const syncRef = db.ref("sentenceSyncRoom");
+    const clientId = Math.random().toString(36).slice(2);
 
-let syncEnabled = false;
-let syncing = false;
+    let syncEnabled = false;
+    let syncing = false;
 
-/* DOM */
-const input = document.getElementById('input');
-const output = document.getElementById('output');
-const generateBtn = document.getElementById('generate');
-const pasteBtn = document.getElementById('paste');
-const clearBtn = document.getElementById('clear');
-const statusEl = document.getElementById('status');
-const progressInner = document.getElementById('progress-inner');
-const currentTextEl = document.getElementById('current-text');
-const syncToggle = document.getElementById('syncToggle');
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
+    const generateBtn = document.getElementById('generate');
+    const pasteBtn = document.getElementById('paste');
+    const clearBtn = document.getElementById('clear');
+    const statusEl = document.getElementById('status');
+    const progressInner = document.getElementById('progress-inner');
+    const currentTextEl = document.getElementById('current-text');
+    const syncToggle = document.getElementById('syncToggle');
 
-let activeRow = null;
-let lineRows = [];
-let currentIndex = -1;
-let totalCount = 0;
+    let activeRow = null;
+    let lineRows = [];
+    let currentIndex = -1;
+    let totalCount = 0;
 
-/* Sync toggle */
-syncToggle.addEventListener("click", () => {
-  syncEnabled = !syncEnabled;
-  syncToggle.textContent = syncEnabled ? "🔄 同步：开启" : "🔄 同步：关闭";
-});
+    syncToggle.addEventListener("click", () => {
+      syncEnabled = !syncEnabled;
+      syncToggle.textContent = syncEnabled ? "🔄 同步：开启" : "🔄 同步：关闭";
 
-/* Sync send */
-function syncFull(text, index){
-  if (!syncEnabled || syncing) return;
-  syncRef.set({ text, index, from:clientId, ts:Date.now() });
-}
+      if (syncEnabled) {
+        syncRef.once("value").then(snap => {
+          const data = snap.val();
+          if (!data) return;
+          applyRemoteData(data, true);
+        });
+      }
+    });
 
-function syncIndexOnly(index){
-  if (!syncEnabled || syncing) return;
-  syncRef.update({ index, from:clientId, ts:Date.now() });
-}
-
-/* Sync receive */
-syncRef.on("value", snap => {
-  const data = snap.val();
-  if (!data) return;
-  if (!syncEnabled) return;
-  if (data.from === clientId) return;
-
-  syncing = true;
-
-  if (typeof data.text === "string" && data.text !== input.value){
-    input.value = data.text;
-    doGenerateFromText(data.text);
-  }
-  if (typeof data.index === "number"){
-    currentIndex = data.index;
-    if (lineRows[currentIndex]) markActiveRow(lineRows[currentIndex]);
-    updateStatus();
-  }
-
-  syncing = false;
-});
-
-/* UI Logic */
-function updateStatus(){
-  if (!totalCount){
-    statusEl.textContent = "还未生成内容";
-    progressInner.style.width = "0%";
-    return;
-  }
-  const now = currentIndex >= 0 ? currentIndex+1 : 0;
-  statusEl.textContent = `当前进度：${now} / ${totalCount}`;
-  progressInner.style.width = `${(now/totalCount)*100}%`;
-}
-
-function markActiveRow(row){
-  if (activeRow && activeRow !== row) activeRow.classList.remove('row-active');
-  row.classList.add('row-active');
-  activeRow = row;
-
-  const txt = row.querySelector('.line-text');
-  currentTextEl.textContent = txt ? txt.textContent : "";
-  row.scrollIntoView({behavior:"smooth", block:"nearest"});
-}
-
-function createLineRow(text, num, index){
-  const row = document.createElement("div");
-  row.className = "line-row";
-
-  const n = document.createElement("div");
-  n.className = "line-num";
-  n.textContent = num;
-
-  const span = document.createElement("span");
-  span.className = "line-text";
-  span.textContent = text;
-
-  const btn = document.createElement("button");
-  btn.className = "copy-btn";
-  btn.textContent = "复制";
-
-  btn.addEventListener("click", async ()=>{
-    await navigator.clipboard.writeText(text);
-    currentIndex = index;
-    markActiveRow(row);
-    updateStatus();
-    syncIndexOnly(index);
-
-    btn.textContent = "已复制";
-    btn.disabled = true;
-    setTimeout(()=>{ btn.textContent="复制"; btn.disabled=false; },600);
-  });
-
-  row.appendChild(n);
-  row.appendChild(span);
-  row.appendChild(btn);
-  return row;
-}
-
-async function copyNextLine(){
-  if (!lineRows.length) return;
-  let next = currentIndex + 1;
-  if (next >= lineRows.length) next = 0;
-
-  const row = lineRows[next];
-  const txt = row.querySelector(".line-text").textContent;
-
-  await navigator.clipboard.writeText(txt);
-  currentIndex = next;
-  markActiveRow(row);
-  updateStatus();
-  syncIndexOnly(next);
-}
-
-document.addEventListener("keydown", e=>{
-  if (e.key === "Enter" && document.activeElement !== input){
-    e.preventDefault();
-    copyNextLine();
-  }
-});
-
-/* Generate list */
-function doGenerateFromText(text){
-  const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(l=>l);
-  output.innerHTML="";
-  lineRows=[];
-  activeRow=null;
-  currentIndex=-1;
-  totalCount=lines.length;
-  currentTextEl.textContent="还没有选中任何句子。";
-
-  if (!lines.length){
-    output.innerHTML = "<div class='empty-tip'>内容为空。</div>";
-    updateStatus();
-    return;
-  }
-
-  lines.forEach((line,i)=>{
-    const m = line.match(/^\s*(\d{1,3})\s*[:).、．\.]?\s+(.*)$/);
-    let num, pure;
-    if (m && m[2].trim()){
-      num = m[1];
-      pure = m[2].trim();
-    } else {
-      num = (i+1).toString();
-      pure = line;
+    function syncFull(text, index) {
+      if (!syncEnabled || syncing) return;
+      syncRef.set({
+        text,
+        index,
+        from: clientId,
+        ts: Date.now()
+      });
     }
-    const row = createLineRow(pure, num, i);
-    lineRows.push(row);
-    output.appendChild(row);
-  });
 
-  updateStatus();
-}
+    function syncIndexOnly(index) {
+      if (!syncEnabled || syncing) return;
+      syncRef.update({
+        index,
+        from: clientId,
+        ts: Date.now()
+      });
+    }
 
-generateBtn.addEventListener("click", ()=>{
-  doGenerateFromText(input.value);
-  syncFull(input.value, -1);
-});
+    function applyRemoteData(data, forceCenter) {
+      if (!data) return;
+      if (data.from === clientId) return;
 
-pasteBtn.addEventListener("click", async ()=>{
-  const txt = await navigator.clipboard.readText();
-  if (txt){
-    input.value = txt;
-    doGenerateFromText(txt);
-    syncFull(txt, -1);
-  }
-});
+      syncing = true;
 
-clearBtn.addEventListener("click", ()=>{
-  input.value="";
-  output.innerHTML="<div class='empty-tip'>请先在上方粘贴文本。</div>";
-  lineRows=[];
-  currentIndex=-1;
-  totalCount=0;
-  currentTextEl.textContent="还没有选中任何句子。";
-  updateStatus();
-  syncFull("", -1);
-});
+      if (typeof data.text === "string" && data.text !== input.value) {
+        input.value = data.text;
+        doGenerateFromText(data.text);
+      }
 
-</script>
+      if (typeof data.index === "number") {
+        currentIndex = data.index;
+        if (lineRows[currentIndex]) {
+          markActiveRow(lineRows[currentIndex], forceCenter);
+        } else {
+          currentTextEl.textContent = "还没有选中任何句子。";
+        }
+        updateStatus();
+      }
+
+      syncing = false;
+    }
+
+    syncRef.on("value", snap => {
+      if (!syncEnabled) return;
+      const data = snap.val();
+      applyRemoteData(data, true);
+    });
+
+    function updateStatus() {
+      if (!totalCount) {
+        statusEl.textContent = '还未生成内容';
+        progressInner.style.width = '0%';
+        return;
+      }
+      const currentDisplay = currentIndex >= 0 ? currentIndex + 1 : 0;
+      statusEl.innerHTML = `当前进度：<strong>${currentDisplay}</strong> / <strong>${totalCount}</strong>`;
+      const percent = totalCount ? (currentDisplay / totalCount) * 100 : 0;
+      progressInner.style.width = percent + '%';
+    }
+
+    function markActiveRow(row, center) {
+      if (activeRow && activeRow !== row) {
+        activeRow.classList.remove('row-active');
+      }
+      row.classList.add('row-active');
+      activeRow = row;
+
+      const textEl = row.querySelector('.line-text');
+      if (textEl) currentTextEl.textContent = textEl.textContent || '';
+
+      if (center) {
+        row.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }
+
+    function createLineRow(text, displayNum, index) {
+      const row = document.createElement('div');
+      row.className = 'line-row';
+
+      const num = document.createElement('div');
+      num.className = 'line-num';
+      num.textContent = displayNum;
+
+      const span = document.createElement('span');
+      span.className = 'line-text';
+      span.textContent = text;
+
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = '复制';
+
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(text);
+          currentIndex = index;
+          markActiveRow(row, false);
+          updateStatus();
+          syncIndexOnly(index);
+
+          const old = btn.textContent;
+          btn.textContent = '已复制';
+          btn.disabled = true;
+          setTimeout(() => {
+            btn.textContent = old;
+            btn.disabled = false;
+          }, 650);
+        } catch (e) {
+          alert('复制失败，可能浏览器不支持，请手动选择文本复制。');
+        }
+      });
+
+      row.appendChild(num);
+      row.appendChild(span);
+      row.appendChild(btn);
+      return row;
+    }
+
+    async function copyNextLine() {
+      if (!lineRows.length) return;
+
+      let next = currentIndex + 1;
+      if (next >= lineRows.length) next = 0;
+
+      const row = lineRows[next];
+      const span = row.querySelector('.line-text');
+      if (!span) return;
+
+      const text = span.textContent;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        currentIndex = next;
+        markActiveRow(row, true);
+        updateStatus();
+        syncIndexOnly(next);
+      } catch (e) {
+        alert('复制失败，可能浏览器不支持，请手动选择文本复制。');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (
+        e.key === 'Enter' &&
+        !e.isComposing &&
+        !e.shiftKey &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.altKey
+      ) {
+        if (document.activeElement === input) return;
+        e.preventDefault();
+        copyNextLine();
+      }
+    });
+
+    function doGenerateFromText(text) {
+      input.value = text;
+
+      const rawLines = text
+        .split(/\r?\n/)
+        .map(l => l.trim())
+        .filter(l => l.length > 0);
+
+      output.innerHTML = '';
+      output.scrollTop = 0;
+      lineRows = [];
+      activeRow = null;
+      currentIndex = -1;
+      totalCount = rawLines.length;
+      currentTextEl.textContent = '还没有选中任何句子。';
+
+      if (!rawLines.length) {
+        totalCount = 0;
+        output.innerHTML = '<div class="empty-tip">内容为空，请确认每句话占一行后再试一次。</div>';
+        updateStatus();
+        return;
+      }
+
+      if (totalCount > 500) {
+        alert(`当前共有 ${totalCount} 行，内容较多，生成和滚动时可能会略有延迟。`);
+      }
+
+      rawLines.forEach((line, i) => {
+        const m = line.match(/^\s*(\d{1,3})\s*[:).、．\.]?\s+(.*)$/);
+        let displayNum;
+        let pureText;
+
+        if (m && m[2].trim().length > 0) {
+          displayNum = m[1];
+          pureText = m[2].trim();
+        } else {
+          displayNum = String(i + 1);
+          pureText = line;
+        }
+
+        const row = createLineRow(pureText, displayNum, i);
+        lineRows.push(row);
+        output.appendChild(row);
+      });
+
+      updateStatus();
+    }
+
+    generateBtn.addEventListener('click', () => {
+      if (generateBtn.disabled) return;
+
+      const oldText = generateBtn.textContent;
+      generateBtn.disabled = true;
+      generateBtn.textContent = '生成中…';
+
+      const text = input.value;
+      doGenerateFromText(text);
+      syncFull(text, -1);
+
+      setTimeout(() => {
+        generateBtn.disabled = false;
+        generateBtn.textContent = oldText;
+      }, 400);
+    });
+
+    pasteBtn.addEventListener('click', async () => {
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (!text) {
+            alert('剪贴板里没有文本内容。');
+            return;
+          }
+          doGenerateFromText(text);
+          syncFull(text, -1);
+          return;
+        } catch (e) {
+          input.focus();
+          alert('浏览器未允许网页直接读取剪贴板。\n请按 Ctrl + V 把内容粘贴到上方输入框后，再点击「生成列表」。');
+          return;
+        }
+      } else {
+        input.focus();
+        alert('当前浏览器不支持一键读取剪贴板，请手动 Ctrl + V 粘贴后点击「生成列表」。');
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      output.innerHTML = '<div class="empty-tip">请先在上方粘贴文本，然后点击「生成列表」。</div>';
+      output.scrollTop = 0;
+      lineRows = [];
+      activeRow = null;
+      currentIndex = -1;
+      totalCount = 0;
+      currentTextEl.textContent = '还没有选中任何句子。';
+      updateStatus();
+      syncFull('', -1);
+    });
+
+    updateStatus();
+  </script>
 </body>
 </html>
