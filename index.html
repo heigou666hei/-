@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>逐句复制工具 - Crypto Dashboard</title>
+  <title>逐句复制工具 - 房间同步版</title>
   <style>
     :root {
       --bg-main: #020617;
@@ -47,7 +47,7 @@
       height: 8px;
     }
     *::-webkit-scrollbar-track {
-      background: rgba(15,23,42,0.9);
+      background: rgba(15,23,42,0.95);
       border-radius: 999px;
     }
     *::-webkit-scrollbar-thumb {
@@ -210,9 +210,7 @@
       flex-wrap: wrap;
     }
 
-    button {
-      font-family: inherit;
-    }
+    button { font-family: inherit; }
 
     .btn-primary {
       padding: 7px 18px;
@@ -524,7 +522,7 @@
       <header>
         <div class="title-wrap">
           <h2 class="app-title">逐句复制工具 <span class="badge">CRYPTO STYLE</span></h2>
-          <div class="subtitle">粘贴句子 → 生成列表（自动识别/保留前序号）→ 回车键循环复制（支持多人同步）。</div>
+          <div class="subtitle">本地模式：不进房间只影响自己；进入房间：房内所有人同步当前句子。</div>
         </div>
         <div class="pill-stat">
           <span class="dot-live"></span>
@@ -539,16 +537,19 @@
           <button class="btn-secondary" id="paste">📋 粘贴并生成</button>
           <button class="btn-primary" id="generate">⚡ 生成列表</button>
           <button class="btn-danger" id="clear">🧹 清空</button>
-          <button class="btn-primary" id="syncToggle" style="padding-inline:14px;background-image:linear-gradient(135deg,#4f46e5,#6366f1);">
-            🔄 同步：关闭
+          <button class="btn-primary" id="createRoom" style="background-image:linear-gradient(135deg,#22c55e,#16a34a);">
+            🧩 开房
+          </button>
+          <button class="btn-secondary" id="joinRoom">
+            🔗 加入房间
           </button>
         </div>
-        <div class="hint">同步关闭时，你自己玩自己的；同步开启后，全员跟随同一行。</div>
+        <div class="hint">没进房间就是本地单机模式；进入房间后，房内所有人同步当前句子和进度。</div>
       </div>
 
       <div class="status">
         <span id="status">还未生成内容</span>
-        <span class="hint">回车键只在页面焦点不在输入框时生效。</span>
+        <span id="room-info" class="hint">当前模式：本地（未加入房间）</span>
       </div>
 
       <div class="progress-bar">
@@ -587,11 +588,7 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const syncRef = db.ref("sentenceSyncRoom");
     const clientId = Math.random().toString(36).slice(2);
-
-    let syncEnabled = false;
-    let syncing = false;
 
     const input = document.getElementById('input');
     const output = document.getElementById('output');
@@ -601,46 +598,45 @@
     const statusEl = document.getElementById('status');
     const progressInner = document.getElementById('progress-inner');
     const currentTextEl = document.getElementById('current-text');
-    const syncToggle = document.getElementById('syncToggle');
+    const createRoomBtn = document.getElementById('createRoom');
+    const joinRoomBtn = document.getElementById('joinRoom');
+    const roomInfoEl = document.getElementById('room-info');
 
     let activeRow = null;
     let lineRows = [];
     let currentIndex = -1;
     let totalCount = 0;
 
-    syncToggle.addEventListener("click", () => {
-      syncEnabled = !syncEnabled;
-      syncToggle.textContent = syncEnabled ? "🔄 同步：开启" : "🔄 同步：关闭";
+    let roomCode = null;
+    let userName = null;
+    let stateRef = null;
+    let usersRef = null;
+    let presenceRef = null;
+    let presenceTimer = null;
+    let syncing = false;
 
-      if (syncEnabled) {
-        syncRef.once("value").then(snap => {
-          const data = snap.val();
-          if (!data) return;
-          applyRemoteData(data, true);
-        });
+    function setLocalModeUI() {
+      roomCode = null;
+      userName = null;
+      roomInfoEl.textContent = '当前模式：本地（未加入房间）';
+    }
+
+    function cleanupRoom() {
+      if (stateRef) stateRef.off();
+      if (usersRef) usersRef.off();
+      if (presenceTimer) { clearInterval(presenceTimer); presenceTimer = null; }
+      if (presenceRef) {
+        try {
+          presenceRef.onDisconnect().cancel && presenceRef.onDisconnect().cancel();
+        } catch (e) {}
       }
-    });
-
-    function syncFull(text, index) {
-      if (!syncEnabled || syncing) return;
-      syncRef.set({
-        text,
-        index,
-        from: clientId,
-        ts: Date.now()
-      });
+      stateRef = null;
+      usersRef = null;
+      presenceRef = null;
+      setLocalModeUI();
     }
 
-    function syncIndexOnly(index) {
-      if (!syncEnabled || syncing) return;
-      syncRef.update({
-        index,
-        from: clientId,
-        ts: Date.now()
-      });
-    }
-
-    function applyRemoteData(data, forceCenter) {
+    function applyRemoteState(data, center) {
       if (!data) return;
       if (data.from === clientId) return;
 
@@ -654,7 +650,7 @@
       if (typeof data.index === "number") {
         currentIndex = data.index;
         if (lineRows[currentIndex]) {
-          markActiveRow(lineRows[currentIndex], forceCenter);
+          markActiveRow(lineRows[currentIndex], center);
         } else {
           currentTextEl.textContent = "还没有选中任何句子。";
         }
@@ -664,11 +660,70 @@
       syncing = false;
     }
 
-    syncRef.on("value", snap => {
-      if (!syncEnabled) return;
-      const data = snap.val();
-      applyRemoteData(data, true);
-    });
+    function joinRoom(code, name, isHost) {
+      if (!code) return;
+      cleanupRoom();
+
+      roomCode = code;
+      userName = name || '匿名';
+
+      const roomRootRef = db.ref('rooms').child(code);
+      stateRef = roomRootRef.child('state');
+      usersRef = roomRootRef.child('users');
+      presenceRef = usersRef.child(clientId);
+
+      const now = Date.now();
+      presenceRef.set({ name: userName, lastActive: now, isHost: !!isHost });
+      presenceRef.onDisconnect().remove();
+
+      presenceTimer = setInterval(() => {
+        presenceRef.update({ lastActive: Date.now() });
+      }, 10000);
+
+      roomInfoEl.textContent = `当前房间：${roomCode} | 在线：计算中…`;
+
+      stateRef.on('value', snapshot => {
+        const data = snapshot.val();
+        applyRemoteState(data, true);
+      });
+
+      usersRef.on('value', snapshot => {
+        const users = snapshot.val() || {};
+        const now = Date.now();
+        let count = 0;
+        Object.keys(users).forEach(k => {
+          const u = users[k];
+          if (!u || !u.lastActive) return;
+          if (now - u.lastActive < 20000) count++;
+        });
+        if (count <= 0) count = 1;
+        roomInfoEl.textContent = `当前房间：${roomCode} | 在线：${count} 人`;
+      });
+
+      stateRef.once('value').then(snap => {
+        const data = snap.val();
+        if (data) applyRemoteState(data, true);
+      }).catch(() => {});
+    }
+
+    function syncFull(text, index) {
+      if (!roomCode || syncing || !stateRef) return;
+      stateRef.set({
+        text,
+        index,
+        from: clientId,
+        ts: Date.now()
+      });
+    }
+
+    function syncIndexOnly(index) {
+      if (!roomCode || syncing || !stateRef) return;
+      stateRef.update({
+        index,
+        from: clientId,
+        ts: Date.now()
+      });
+    }
 
     function updateStatus() {
       if (!totalCount) {
@@ -880,6 +935,37 @@
       syncFull('', -1);
     });
 
+    createRoomBtn.addEventListener('click', () => {
+      let code = prompt('请输入房间代码（字母或数字），留空则随机生成：');
+      if (!code) {
+        code = String(Math.floor(1000 + Math.random() * 9000));
+      } else {
+        code = code.trim();
+      }
+      if (!code) return;
+      let name = prompt('请输入你的昵称（可选）：');
+      if (!name) name = '房主';
+      joinRoom(code, name, true);
+      alert(`房间已创建：${code}\n把房间代码发给别人，让他们点“加入房间”输入相同代码即可同步。`);
+    });
+
+    joinRoomBtn.addEventListener('click', () => {
+      let code = prompt('请输入要加入的房间代码：');
+      if (!code) {
+        alert('房间代码不能为空');
+        return;
+      }
+      code = code.trim();
+      if (!code) {
+        alert('房间代码不能为空');
+        return;
+      }
+      let name = prompt('请输入你的昵称（可选）：');
+      if (!name) name = '访客';
+      joinRoom(code, name, false);
+    });
+
+    setLocalModeUI();
     updateStatus();
   </script>
 </body>
